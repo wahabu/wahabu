@@ -4,8 +4,7 @@ on:
   schedule: # 03:00 JST == 18:00 UTC
     - cron: '0 18 * * *'
   workflow_dispatch:
-permissions:
-  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,8 +21,7 @@ jobs:
       - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
       - name: Commit & Push
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add -A .
-          git commit -m "generated"
-          git push
+          git diff --cached --exit-code --quiet || (git commit -m "generated" && git push)
