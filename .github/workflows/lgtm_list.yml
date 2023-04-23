@@ -6,7 +6,8 @@ on:
     paths: 'LGTM/**'
   push:
     paths: 'LGTM/**'
-
+permissions:
+  contents: write
 jobs:
   create_list:
     runs-on: ubuntu-latest
