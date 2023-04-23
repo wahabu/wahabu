@@ -19,6 +19,8 @@ jobs:
         with:
           python-version: '3.10' 
       - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
+      permissions:
+        contents: write
       - name: Commit & Push
         run: |
           git config user.name github-actions
