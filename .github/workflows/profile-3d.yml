@@ -23,5 +23,5 @@ jobs:
         run: |
           git config --global user.name "wahabu"
           git config --global user.email "ritscg2hibo@gmail.com"
-          git add -A .
+          git add .
           git diff --cached --exit-code --quiet || (git commit -m "generated" && git push)
