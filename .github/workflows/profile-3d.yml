@@ -16,7 +16,7 @@ jobs:
       # Generate 3D contribution graph
       - uses: yoshi389111/github-profile-3d-contrib@0.7.1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.Public_reop }}
           USERNAME: ${{ github.repository_owner }}
       # Setup Python 3.10
       - uses: actions/setup-python@v4
@@ -26,9 +26,11 @@ jobs:
       - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
       # Commit and push the changes
       - name: Commit & Push
-        uses: EndBug/add-and-commit@v7.3.0
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          author_name: github-actions
-          author_email: github-actions@github.com
-          message: 'generated'
-          token: ${{ secrets.ACCESS_TOKEN }}
+          commit_message: 'generated'
+          commit_user_name: 'wahabu'
+          commit_user_email: 'ritscg2hibo@gmail.com'
+          branch: main
+          repository: ${{ github.repository }}
+          github_token: ${{ secrets.Public_reop }}
