@@ -1,5 +1,8 @@
 name: GitHub-Profile-3D-Contrib
 
+permissions:
+  contents: write
+
 on:
   schedule:
     # Run the workflow daily at 18:00 UTC (03:00 JST)
@@ -26,11 +29,8 @@ jobs:
       - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
       # Commit and push the changes
       - name: Commit & Push
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'generated'
-          commit_user_name: 'wahabu'
-          commit_user_email: 'ritscg2hibo@gmail.com'
-          branch: main
-          repository: ${{ github.repository }}
-          github_token: ${{ secrets.Public_reop }}
+        run: |
+          git config --global user.name wahabu
+          git config --global user.email ritscg2hibo@gmail.com
+          git add .
+          git diff --cached --exit-code --quiet || (git commit -m "generated" && git push)
