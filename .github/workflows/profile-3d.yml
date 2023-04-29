@@ -25,9 +25,9 @@ jobs:
       # Run the script to change the border of the 3D contribution graph
       - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
       # Commit and push the changes
-#       - name: Commit & Push
-#         run: |
-#           git config --global user.name wahabu
-#           git config --global user.email ritscg2hibo@gmail.com
-#           git add .
-#           git diff --cached --exit-code --quiet || (git commit -m "generated" && git push)
+      - name: Commit & Push
+        run: |
+          git config --global user.name wahabu
+          git config --global user.email ritscg2hibo@gmail.com
+          git add .
+          git diff --cached --exit-code --quiet || (git commit -m "generated" && git push)
