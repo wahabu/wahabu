@@ -26,9 +26,9 @@ jobs:
       - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
       # Commit and push the changes
       - name: Commit & Push
-        uses: actions-js/push@v1
+        uses: EndBug/add-and-commit@v7.3.0
         with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          user_name: wahabu
-          user_email: ritscg2hibo@gmail.com
-          commit_message: 'generated'
+          author_name: wahabu
+          author_email: ritscg2hibo@gmail.com
+          message: 'generated'
+          token: ${{ secrets.ACCESS_TOKEN }}
