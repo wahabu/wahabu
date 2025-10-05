@@ -3,9 +3,13 @@ name: GitHub-Profile-3D-Contrib
 permissions:
   contents: write
 
+concurrency:
+  group: profile-3d-${{ github.ref }}
+  cancel-in-progress: false
+
 on:
   schedule:
-    # Run the workflow daily at 18:00 UTC (03:00 JST)
+    # Runs daily at 18:00 UTC (→ 03:00 JST next day)
     - cron: '0 18 * * *'
   workflow_dispatch:
 
@@ -13,24 +17,50 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: generate-github-profile-3d-contrib
+
     steps:
-      # Checkout the repository
-      - uses: actions/checkout@v3
-      # Generate 3D contribution graph
-      - uses: yoshi389111/github-profile-3d-contrib@0.7.1
+      # 1) Checkout full history on main (not shallow to avoid non-fast-forward)
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # 2) Generate 3D contribution assets
+      - name: Generate 3D SVG
+        uses: yoshi389111/github-profile-3d-contrib@0.7.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
-      # Setup Python 3.10
-      - uses: actions/setup-python@v4
+
+      # 3) Python (if you need to post-process the SVG)
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      # Run the script to change the border of the 3D contribution graph
-      - run: python ./bin/change-border.py profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-night-rainbow-with-border.svg
-      # Commit and push the changes
+
+      - name: Post-process border
+        run: |
+          python ./bin/change-border.py \
+            profile-3d-contrib/profile-night-rainbow.svg \
+            profile-3d-contrib/profile-night-rainbow-with-border.svg
+
+      # 4) Commit & push safely (rebase on remote to avoid non-fast-forward)
       - name: Commit & Push
         run: |
-          git config --global user.name wahabu
-          git config --global user.email ritscg2hibo@gmail.com
-          git add .
-          git diff --cached --exit-code --quiet || (git commit -m "generated" && git push)
+          # Use noreply so commits belong to your GitHub account
+          git config user.name "wahabu"
+          git config user.email "ritscg2hibo@gmail.com"  # OR: <52596957+wahabu@users.noreply.github.com>
+
+          git add -A
+          # Skip if no changes
+          git diff --cached --quiet && exit 0
+
+          git commit -m "generated"
+
+          # Rebase on latest remote to prevent non-fast-forward
+          git fetch origin
+          git pull --rebase origin main || true
+
+          # Push current HEAD to main
+          git push origin HEAD:main
